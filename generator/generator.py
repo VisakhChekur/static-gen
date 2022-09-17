@@ -85,10 +85,8 @@ class Generator:
         subdirectories will also be checked recursively for markdown files. Returns
         the number of processed files."""
 
-        print(dirpath)
         # Getting the markdown files
         md_files = [path for path in dirpath.rglob("*.md")]
-        print(md_files)
 
         missing_metadata: list[FileDetails] = []
         invalid_metadata: list[FileDetails] = []

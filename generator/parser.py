@@ -50,6 +50,9 @@ class Parser:
         """Parses the metadata and returns a dictionary containing
         the key value pairs as per the metadata."""
 
+        # TODO: Set defaults for title, author and date and other metadata
+        # Do after confirming whether I really should do this or not
+
         parsed_metadata: dict[str, str] = {}
         for data in metadata:
             split_data = data.split(":")

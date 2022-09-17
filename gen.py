@@ -1,3 +1,6 @@
+# Standard library imports
+import time
+
 # External library imports
 import typer
 
@@ -43,6 +46,7 @@ def generate_sites(
 
     # TODO: Add support for making only articles or only pages or both.
     processed_articles = processed_pages = 0
+    start_time = time.time()
     if not filename:
         try:
             generator = Generator()
@@ -58,10 +62,10 @@ def generate_sites(
             typer.secho("\nInvalid config", fg="red")
             typer.secho(e.error)
             return
-
+    end_time = time.time()
+    total_time = end_time - start_time
     typer.secho(
-        f"\nProcessed {processed_articles} articles and {processed_pages} pages.",
-        fg="blue",
+        f"\nProcessed {processed_articles} articles and {processed_pages} pages in {total_time:.3f} seconds.",
     )
 
 

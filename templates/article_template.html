@@ -7,14 +7,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/css/index.css">
     <link rel="stylesheet" href="../static/css/article.css">
+    {% if title %}
     <title>{{title}}</title>
+    {% endif %}
 </head>
 
 <body>
+    {% if title %}
     <h1 class="title vertical-centered">{{title}}</h1>
+    {% endif %}
     <article class="blog-content vertical-centered">
         {{content}}
+        {% if author %}
         <p class="author">Written by {{author}}</p>
+        {% endif %}
     </article>
 </body>
 
