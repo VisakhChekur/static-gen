@@ -159,4 +159,12 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+# Custom
 trial.py
+todo.py
+/.vscode
+
+# Articles and the created files as examples during development
+/content
+/output
+/static
