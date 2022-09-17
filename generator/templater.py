@@ -1,11 +1,16 @@
-# External library imports
-import json
+# Standard library imports
 from pathlib import Path
+from typing import Optional
+
+# External library imports
+import typer
 from jinja2 import Environment, FileSystemLoader
 
 
 # Local imports
 from generator.types import ParsedFileData
+from helpers import get_config
+
 
 # ----- CONSTANTS -----
 
@@ -13,10 +18,11 @@ from generator.types import ParsedFileData
 # TODO: Find out a better way of handling this so that I'm not doing so many file reads.
 def get_templates_dir() -> Path:
     try:
-        with open("config.json", "r") as f:
-            config = json.load(f)
+        config = get_config()
         return Path(config["project_directory"]) / "templates"
     except FileNotFoundError:
+        return Path(".") / "templates"
+    except KeyError:
         return Path(".") / "templates"
 
 

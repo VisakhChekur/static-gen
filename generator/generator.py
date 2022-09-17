@@ -1,7 +1,7 @@
 # Standard library imports
-import json
 import shutil
 from pathlib import Path
+from typing import Callable
 
 # External library imports
 import markdown
@@ -13,6 +13,7 @@ from generator import exceptions
 from generator.parser import Parser
 from generator.templater import ArticleTemplater, PageTemplater
 from generator.types import FileDetails
+from helpers import get_config
 
 
 class Generator:
@@ -60,7 +61,9 @@ class Generator:
 
         self._set_theme()
 
-        return self._generate_all(self._content_dir / "pages")
+        return self._generate_all(
+            self._content_dir / "pages", generator_method=self.generate_single_page
+        )
 
     def generate_all_articles(self) -> int:
         """Generates and saves all the HTML files for all markdown files in the articles
@@ -69,16 +72,23 @@ class Generator:
         # TODO: Only set theme if the theme has changed.
         self._set_theme()
 
-        return self._generate_all(self._content_dir / "articles")
+        return self._generate_all(
+            self._content_dir / "articles",
+            generator_method=self.generate_single_article,
+        )
 
     # ----- HELPER METHODS -----
-    def _generate_all(self, dirpath: Path) -> int:
+    def _generate_all(
+        self, dirpath: Path, *, generator_method: Callable[[Path], None]
+    ) -> int:
         """Generates HTML files for all markdown files in a given directory. All
         subdirectories will also be checked recursively for markdown files. Returns
         the number of processed files."""
 
+        print(dirpath)
         # Getting the markdown files
         md_files = [path for path in dirpath.rglob("*.md")]
+        print(md_files)
 
         missing_metadata: list[FileDetails] = []
         invalid_metadata: list[FileDetails] = []
@@ -86,7 +96,7 @@ class Generator:
         # Generating the HTML file
         for md_file in md_files:
             try:
-                self.generate_single_article(md_file)
+                generator_method(md_file)  # type: ignore
             except exceptions.NoMetadata:
                 file_details = FileDetails(md_file.name, md_file)
                 missing_metadata.append(file_details)
@@ -130,13 +140,7 @@ class Generator:
     def _get_directories(self) -> tuple[Path, Path, Path]:
         """Returns the project, content and publish directory paths."""
 
-        config_path = Path("./config.json")
-        if not config_path.exists():
-            raise exceptions.ConfigNotFound()
-
-        with open(config_path, "r") as f:
-            config = json.load(f)
-
+        config = get_config()
         if "project_directory" not in config:
             raise exceptions.InvalidConfig(
                 "Missing 'project_directory' in 'config.json'"
@@ -191,12 +195,8 @@ class Generator:
     def _get_default_theme(self) -> str:
         """Returns the default theme set up in the project configuration."""
 
-        with open("./config.json", "r") as f:
-            config = json.load(f)
-
-        if "theme" in config:
-            return config["theme"]
-        return "default"
+        config = get_config()
+        return config.get("theme", "default")
 
     def _get_page_template_name(self, filepath: Path) -> str:
         """Creates the page template name from the filename and returns it."""

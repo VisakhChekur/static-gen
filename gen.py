@@ -35,13 +35,19 @@ def initialize_project(filepath: str = "."):
 
 
 @app.command("make")
-def generate_sites(filename: str = ""):
+def generate_sites(
+    filename: str = "",
+    articles: bool = typer.Option(default=False),
+    pages: bool = typer.Option(default=False),
+):
 
-    processed_articles = 0
+    # TODO: Add support for making only articles or only pages or both.
+    processed_articles = processed_pages = 0
     if not filename:
         try:
             generator = Generator()
             processed_articles = generator.generate_all_articles()
+            processed_pages = generator.generate_all_pages()
         except gen_exceptions.ConfigNotFound:
             typer.secho(
                 "\n'config.json' not found. Please make sure to run the command from the root of the directory",
@@ -53,7 +59,10 @@ def generate_sites(filename: str = ""):
             typer.secho(e.error)
             return
 
-    typer.secho(f"\nProcessed {processed_articles} articles", fg="blue")
+    typer.secho(
+        f"\nProcessed {processed_articles} articles and {processed_pages} pages.",
+        fg="blue",
+    )
 
 
 @app.command("update")
