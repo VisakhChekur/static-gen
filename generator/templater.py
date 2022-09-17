@@ -12,9 +12,12 @@ from generator.types import ParsedFileData
 
 # TODO: Find out a better way of handling this so that I'm not doing so many file reads.
 def get_templates_dir() -> Path:
-    with open("config.json", "r") as f:
-        config = json.load(f)
-    return Path(config["project_directory"]) / "templates"
+    try:
+        with open("config.json", "r") as f:
+            config = json.load(f)
+        return Path(config["project_directory"]) / "templates"
+    except FileNotFoundError:
+        return Path(".") / "templates"
 
 
 class Templater:

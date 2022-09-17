@@ -2,10 +2,11 @@
 import typer
 
 # Local imports
+from helpers import get_config
 from builder.builder import Builder
-from builder.exceptions import NoTemplateDirectoryFound, ProjectDirectoryNotFound
 from generator.generator import Generator
 from generator import exceptions as gen_exceptions
+from builder.exceptions import NoTemplateDirectoryFound, ProjectDirectoryNotFound
 
 app = typer.Typer()
 
@@ -53,6 +54,36 @@ def generate_sites(filename: str = ""):
             return
 
     typer.secho(f"\nProcessed {processed_articles} articles", fg="blue")
+
+
+@app.command("update")
+def update_directory(directory: str):
+
+    try:
+        config: dict[str, str] = get_config()
+    except FileNotFoundError:
+        typer.secho(
+            "\n'config.json' was not found. Please run the command from the root directory of the project",
+            fg="red",
+        )
+        return
+
+    if "project_directory" not in config:
+        typer.secho("\n'project_directory' missing in 'config.json'", fg="red")
+        return
+
+    builder = Builder(config["project_directory"])
+    directories = {
+        "templates": builder.update_templates_directory,
+    }
+    update = directories.get(directory, None)
+
+    if not update:
+        typer.secho("\nInvalid directory name", fg="red")
+        return
+
+    update()
+    typer.secho(f"\nUpdated '{directory}' successfully!", fg="green")
 
 
 if __name__ == "__main__":

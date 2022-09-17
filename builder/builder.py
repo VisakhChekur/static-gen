@@ -26,6 +26,11 @@ class Builder:
         self._build_templates_directory()
         self._build_config_json()
 
+    def update_templates_directory(self):
+        """Updates the templates directory."""
+
+        self._build_templates_directory()
+
     def _build_content_directory(self):
         """Builds the 'content' directory at the root of the project directory.
         This also builds the 'articles' and 'pages' subdirectories within the 'content'
@@ -52,7 +57,7 @@ class Builder:
 
         # Copying the templates to the project
         templates_dir_path = self._project_directory / "templates"
-        shutil.copytree(stored_templates_dir, templates_dir_path)
+        shutil.copytree(stored_templates_dir, templates_dir_path, dirs_exist_ok=True)
 
     def _build_config_json(self):
         """Creates the `config.json` file at the root of the project directory."""
