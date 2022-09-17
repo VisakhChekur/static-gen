@@ -8,7 +8,7 @@ NOTE: This is made for personal use. So you use at your own risk!!
 
 * uses [Jinja2](https://jinja.palletsprojects.com/en/3.1.x/) as the template engine
 * uses [Markdown](https://daringfireball.net/projects/markdown/) to convert the markdown files into HTML files
-
+* uses [Typer](https://typer.tiangolo.com/) for the CLI
 
 # Installation
 
@@ -16,9 +16,14 @@ NOTE: This is made for personal use. So you use at your own risk!!
 
     `git clone https://github.com/VisakhChekur/static-gen.git`
 
-2. Install the dependencies (need to install [Poetry](https://python-poetry.org/) for this)
+2. Install the dependencies 
 
-    `poetry install`
+    * with [Poetry](https://python-poetry.org/)
+
+        * `poetry install`
+
+    * without [Poetry](https://python-poetry.org/)
+        * `pip install -r requirements.txt`
 
 3. Add the path to the directory that holds `gen.py` to the PATH environment variable
 
